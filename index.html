@@ -43,7 +43,19 @@
               <ul class="current">
                 <li class="toctree-l1 current"><a class="reference internal current" href=".">Home</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#commands">Commands</a>
+    <li class="toctree-l2"><a class="reference internal" href="#a-updatesrefreshes">a. Updates/Refreshes</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#b-project-process">b. Project Process</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#c-work-flow">c. Work Flow</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#d-ros-network">d. ROS Network</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#e-tradeoffs">e. Tradeoffs</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#f-videos-of-working-model">f. Videos of Working Model</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#f-goals-process-and-results">f. Goals, Process and Results</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#project-layout">Project layout</a>
     </li>
@@ -70,7 +82,7 @@
     <li><a href="." class="icon icon-home" alt="Docs"></a> &raquo;</li>
       <li>Home</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/PraveenPaidi/Robotics_Deployment/index.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/PraveenPaidi/Robotics_Deployment/edit/master/index.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -78,15 +90,47 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="welcome-to-mkdocs">Welcome to MkDocs</h1>
-<p>For full documentation visit <a href="https://www.mkdocs.org">mkdocs.org</a>.</p>
-<h2 id="commands">Commands</h2>
+                <h1 id="introduction">Introduction</h1>
+<p>The main objective of this project is to detect the absence or presence of facemask using the OAK-D camera feed of turtlebot by deploying Neural Networks.</p>
+<p>If the turtlebot camera detects a face without mask, it'll move towards the detected face. </p>
+<h2 id="a-updatesrefreshes">a. Updates/Refreshes</h2>
+<ol>
+<li>We made our own Neural Network for the feature generation by taking current_frames from OAK-D camera.</li>
+<li>We used inbuilt software called MTCNN facedetection algorithm for creation of the bounding box for faces.</li>
+<li>From the custom model, We deployed model_weights to ROS node which does face mask recognition in real time.</li>
+<li>This node publishes 'current_image' to face detection MTCNN subscriber Node.</li>
+<li>This node publishes /cmd/vel and custom messaaaaa</li>
+</ol>
+<h2 id="b-project-process">b. Project Process</h2>
 <ul>
 <li><code>mkdocs new [dir-name]</code> - Create a new project.</li>
 <li><code>mkdocs serve</code> - Start the live-reloading docs server.</li>
 <li><code>mkdocs build</code> - Build the documentation site.</li>
 <li><code>mkdocs -h</code> - Print help message and exit.</li>
 </ul>
+<h2 id="c-work-flow">c. Work Flow</h2>
+<p><img alt="Home" src="img/Screenshot.png" /></p>
+<ul>
+<li>
+<p>Initially we collected dataset consisting of huge variations i.e 
+Face with mask and Without Mask at different distances from OAK-D camera at different backgrounds with multiple gestures being performed.</p>
+</li>
+<li>
+<p>Few Instances of preliminary dataset.</p>
+</li>
+<li>With Face Mask</li>
+</ul>
+<p><img alt="H" src="img/Picture1.jpg" /><img alt="j" src="img/Picture2.jpg" /><img alt="I" src="img/Picture3.jpg" /><img alt="II" src="img/Picture4.jpg" /><img alt="I" src="img/Picture5.jpg" /><img alt="I" src="img/Picture8.jpg" /></p>
+<ul>
+<li>Without Face Mask</li>
+</ul>
+<p><img alt="H" src="img/Picture12.jpg" /><img alt="j" src="img/Picture13.jpg" /><img alt="I" src="img/Picture14.jpg" /><img alt="II" src="img/Picture15.jpg" /><img alt="I" src="img/Picture17.jpg" /><img alt="I" src="img/Picture18.jpg" /></p>
+<h2 id="d-ros-network">d. ROS Network</h2>
+<h2 id="e-tradeoffs">e. Tradeoffs</h2>
+<h2 id="f-videos-of-working-model">f. Videos of Working Model</h2>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/yYAw79386WI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+<h2 id="f-goals-process-and-results">f. Goals, Process and Results</h2>
 <h2 id="project-layout">Project layout</h2>
 <pre><code>mkdocs.yml    # The configuration file.
 docs/
@@ -144,5 +188,5 @@ docs/
 
 <!--
 MkDocs version : 1.4.2
-Build Date UTC : 2023-05-02 23:30:48.129621+00:00
+Build Date UTC : 2023-05-03 04:45:30.311421+00:00
 -->
