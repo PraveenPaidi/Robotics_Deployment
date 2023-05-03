@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Neural Network Model - Project Face Mask Detection</title>
+    <title>Mask Detector - Project Face Mask Detection</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Neural Network Model";
-        var mkdocs_page_input_path = "Neural_Network_Model.md";
+        var mkdocs_page_name = "Mask Detector";
+        var mkdocs_page_input_path = "Mask_Detector.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -48,26 +48,22 @@
                 <li class="toctree-l1"><a class="reference internal" href="../about/">About</a>
                 </li>
               </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../Neural_Network_Model/">Neural Network Model</a>
+                </li>
+              </ul>
               <ul class="current">
-                <li class="toctree-l1 current"><a class="reference internal current" href="./">Neural Network Model</a>
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Mask Detector</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#neural-network-for-face-mask-detection-model">Neural Network for Face Mask Detection Model</a>
+    <li class="toctree-l2"><a class="reference internal" href="#real-time-ros-node-for-face-mask-detection-model">Real time ROS node for Face Mask Detection Model</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#training-data">Training data</a>
+    <li class="toctree-l2"><a class="reference internal" href="#node">node</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#model-building">Model Building</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#training-the-model">Training the Model</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#saving-the-model-weights-and-model">Saving the Model Weights and Model</a>
+    <li class="toctree-l2"><a class="reference internal" href="#calling-the-node">calling the node</a>
     </li>
     </ul>
-                </li>
-              </ul>
-              <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../Mask_Detector/">Mask Detector</a>
                 </li>
               </ul>
               <ul>
@@ -92,9 +88,9 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li>
-      <li>Neural Network Model</li>
+      <li>Mask Detector</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/PraveenPaidi/Robotics_Deployment/edit/master/Neural_Network_Model.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/PraveenPaidi/Robotics_Deployment/edit/master/Mask_Detector.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -103,74 +99,81 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="introduction">Introduction</h1>
-<p>The main objective of this project is to detect the absence or presence of facemask using the OAK-D camera feed of turtlebot by deploying Neural Networks.</p>
-<p>If the turtlebot camera detects a face without mask, it'll move towards the detected face. </p>
-<h2 id="neural-network-for-face-mask-detection-model">Neural Network for Face Mask Detection Model</h2>
+<h2 id="real-time-ros-node-for-face-mask-detection-model">Real time ROS node for Face Mask Detection Model</h2>
 <h2 id="requirements">Requirements</h2>
-<pre><code># The Neural Network for Face detection.
+<pre><code># RealTime for Face detection.
 # Code
 
-import pandas as pd
-import tensorflow as tf
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
-from matplotlib import pyplot as plt
+import sys
+import cv2
+import time
+import rclpy
 import numpy as np
+from rclpy.node import Node
+from std_msgs.msg           import String
+from sensor_msgs.msg        import Image
+from geometry_msgs.msg      import Point
+from cv_bridge              import CvBridge, CvBridgeError
+from tensorflow.keras.models import load_model
+from geometry_msgs.msg import Twist
 </code></pre>
-<h2 id="training-data">Training data</h2>
+<h2 id="node">node</h2>
 <pre><code>#Step 1 Data
 
-train_df = pd.read_csv(r'D:\Spring 23\EGR 598\project\Data6.csv')
-train_df['label'] = train_df['label'].astype(str)
-train_datagen = ImageDataGenerator(rescale=1./255)
-test_datagen = ImageDataGenerator(rescale=1./255)
+class MaskDetector(Node):
 
-train_generator = train_datagen.flow_from_dataframe(
-    dataframe=train_df,
-    directory=r'D:\Spring 23\EGR 598\project\train_images\train_data6',
-    x_col='filename',
-    y_col='label',
-    target_size=(300, 300),
-    batch_size=32,
-    class_mode='sparse',
-    shuffle=True)
-</code></pre>
-<h2 id="model-building">Model Building</h2>
-<pre><code># Step 2: Build and compile the model
-model = Sequential([
-    Conv2D(32, (3, 3), activation='relu', input_shape=(300, 300, 3)),
-    MaxPooling2D((2, 2)),
-    Conv2D(64, (3, 3), activation='relu'),
-    MaxPooling2D((2, 2)),
-    Conv2D(128, (3, 3), activation='relu'),
-    MaxPooling2D((2, 2)),   # till here better accuracy      
-    Flatten(),
-    Dense(64, activation='relu'),
-    Dense(3, activation='softmax')
-       ])
+    def __init__(self):
+    super().__init__('subscriber') 
+    self.br = CvBridge()
+    print("Subscribed to the video feed&gt;&gt;&gt;&gt;")
+    self.subscription = self.create_subscription(Image,'/color/image', self.listener_callback, 10)  
+    self.model = load_model(r'/home/ksubra25/Downloads/model_for_inference.h5')
 
-history =model.compile(optimizer='adam',loss='sparse_categorical_crossentropy',metrics=['accuracy'])
-acc_list = []
+    #### Publisher ####
+    self.publisher = self.create_publisher(Image,'/go/image', 10)
+    self.vel = Twist()
+
+    def listener_callback(self,data):
+
+        current_frame = self.br.imgmsg_to_cv2(data)
+    send_frame = current_frame
+    current_frame=cv2.resize(current_frame,(300,300))
+    current_frame=cv2.cvtColor(current_frame,cv2.COLOR_BGR2RGB)
+    self.new_frame = current_frame
+    current_frame= current_frame/255.0
+    cv2.imshow("image",current_frame)
+    current_frame= np.expand_dims(current_frame,axis=0)
+    predictions=self.model.predict(current_frame)
+    class_idx=np.argmax(predictions)
+    if class_idx==0:
+        label='with mask'
+    elif class_idx==1:
+        label='Without mask'  
+        self.publisher.publish(self.br.cv2_to_imgmsg(send_frame))
+    else:
+        label='no face detected'
+
+    cv2.putText(self.new_frame,label,(10,30),cv2.FONT_HERSHEY_SIMPLEX,1.0,(0,255,0),2)
+    cv2.imshow('Detection',self.new_frame)     
+    cv2.waitKey(1)
 </code></pre>
-<h2 id="training-the-model">Training the Model</h2>
-<pre><code># Step 3: Train the model
-history =model.fit(train_generator, epochs=5)
-for acc in history.history['accuracy']:
-    acc_list.append(acc)  
-weights = model.get_weights()
-</code></pre>
-<h2 id="saving-the-model-weights-and-model">Saving the Model Weights and Model</h2>
-<pre><code># Step 4: saving model
-model.save_weights('my_model_weights.h5')
-model.save('mode_for_inference.h5')
+<h2 id="calling-the-node">calling the node</h2>
+<pre><code>def main(args=None):
+    rclpy.init(args=args)
+    image_subscriber = MaskDetector()
+    rclpy.spin(image_subscriber)
+    image_subscriber.destroy_node()
+    rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()
 </code></pre>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../about/" class="btn btn-neutral float-left" title="About"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../Mask_Detector/" class="btn btn-neutral float-right" title="Mask Detector">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../Neural_Network_Model/" class="btn btn-neutral float-left" title="Neural Network Model"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../Face_Bounding_box/" class="btn btn-neutral float-right" title="Face Bounding Box">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -197,10 +200,10 @@ model.save('mode_for_inference.h5')
         </span>
     
     
-      <span><a href="../about/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../Neural_Network_Model/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../Mask_Detector/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../Face_Bounding_box/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

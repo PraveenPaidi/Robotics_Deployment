@@ -70,6 +70,18 @@
                 <li class="toctree-l1"><a class="reference internal" href="Neural_Network_Model/">Neural Network Model</a>
                 </li>
               </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="Mask_Detector/">Mask Detector</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="Face_Bounding_box/">Face Bounding Box</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="Velocity_subscriber/">Velocity Subscriber</a>
+                </li>
+              </ul>
       </div>
     </div>
     </nav>
@@ -182,9 +194,54 @@ Face with mask and Without Mask at different distances from OAK-D camera at diff
 <p><img src="./img/Final_accuracy.png" alt="Image 1" width="500" height="500"></p>
 <h2 id="d-ros-network">d. ROS Network</h2>
 <h2 id="e-tradeoffs">e. Tradeoffs</h2>
-<p><strong>Main Challenges</strong><br />
-1. Training time<br />
-2. Accurate prediction of frames during Real time streaming  </p>
+<p><strong>Main Challenges</strong>  </p>
+<ol>
+<li>
+<p>Training time</p>
+<ul>
+<li>As the Neural Network model is heavy, we trained set of images in GPU and obtained the model.
+  Then transferred the model weights to ROS node to take one frame at a time.This has no lag and almost accurate.</li>
+</ul>
+</li>
+<li>
+<p>Movement of Turtlebot</p>
+<ul>
+<li>For the Face detection and creating a bounding box, it takes more time in real time.As a result, output window with bounding box has a lag of few seconds.
+  Which inturn carries the lag in moving the turtlebot towards the bounding box containing face without the mask.</li>
+</ul>
+</li>
+<li>
+<p>Detection vs Movement</p>
+<ul>
+<li>Although Face mask detection takes place at real time, turtlebot is moving after few moments later the detection and viceversa.</li>
+</ul>
+</li>
+</ol>
+<p><strong>Constraints</strong></p>
+<ol>
+<li>
+<p>Fitting Training data</p>
+<ul>
+<li>We used Adam algorithm to save the training time.</li>
+<li>We chose number of epochs to 5 to not overfit on training data by considering bias and variance trade off.</li>
+</ul>
+</li>
+<li>
+<p>Non Generalized Detection</p>
+<ul>
+<li>As the dataset is limited, detection using OAK-D camera at different environment with different person is not feasible.</li>
+<li>To detect, proper lighting and limited distance to the camera are required.</li>
+<li>With limited training data, we are able to test at few places with absolute faces successfully.</li>
+</ul>
+</li>
+<li>
+<p>Bounding box trade off</p>
+<ul>
+<li>We used face detection algorithm along with velocity subscriber not with face mask detector to increase the speed of detection.</li>
+<li>It significantly increased the speed of detection by almost 2 to 3 sec.</li>
+</ul>
+</li>
+</ol>
 <h2 id="f-videos-of-working-model">f. Videos of Working Model</h2>
 <p><strong>RealTime detection of Presence or Ansence of mask with absolute zero training of Person's face</strong></p>
 <iframe width="560" height="315" src="https://www.youtube.com/embed/pe2afb0SzxE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
@@ -247,5 +304,5 @@ docs/
 
 <!--
 MkDocs version : 1.4.2
-Build Date UTC : 2023-05-03 09:35:05.397083+00:00
+Build Date UTC : 2023-05-03 11:22:50.261540+00:00
 -->
