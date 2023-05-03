@@ -96,10 +96,9 @@
 <h2 id="a-updatesrefreshes">a. Updates/Refreshes</h2>
 <ol>
 <li>We made our own Neural Network for the feature generation by taking current_frames from OAK-D camera.</li>
-<li>We used inbuilt software called MTCNN facedetection algorithm for creation of the bounding box for faces.</li>
-<li>From the custom model, We deployed model_weights to ROS node which does face mask recognition in real time.</li>
-<li>This node publishes 'current_image' to face detection MTCNN subscriber Node.</li>
-<li>This node publishes /cmd/vel and custom messaaaaa</li>
+<li>From the custom NN model, We deployed model_weights to ROS node which does face mask recognition in real time by subscribing to real time data current_frame.</li>
+<li>We used inbuilt software called MTCNN face detection algorithm for creation of the bounding box for faces which is also subscribing to real time data current_frame.</li>
+<li>If the custom model is detecting face without maask, it publishes velocity to move towards that face by using Velocity subscriber Node.</li>
 </ol>
 <h2 id="b-project-process">b. Project Process</h2>
 <ul>
@@ -116,15 +115,29 @@
 Face with mask and Without Mask at different distances from OAK-D camera at different backgrounds with multiple gestures being performed.</p>
 </li>
 <li>
-<p>Few Instances of preliminary dataset.</p>
+<p><strong>Few Instances of preliminary dataset</strong></p>
 </li>
-<li>With Face Mask</li>
+<li><strong>With Face Mask</strong>  -  If the frame has frame consisting of face with mask</li>
 </ul>
 <p><img alt="H" src="img/Picture1.jpg" /><img alt="j" src="img/Picture2.jpg" /><img alt="I" src="img/Picture3.jpg" /><img alt="II" src="img/Picture4.jpg" /><img alt="I" src="img/Picture5.jpg" /><img alt="I" src="img/Picture8.jpg" /></p>
 <ul>
-<li>Without Face Mask</li>
+<li><strong>Without Face Mask</strong> - If the frame has consisting of face without mask and some ambiguity cases of half frames and fully blurred faces.</li>
 </ul>
 <p><img alt="H" src="img/Picture12.jpg" /><img alt="j" src="img/Picture13.jpg" /><img alt="I" src="img/Picture14.jpg" /><img alt="II" src="img/Picture15.jpg" /><img alt="I" src="img/Picture17.jpg" /><img alt="I" src="img/Picture18.jpg" /></p>
+<ul>
+<li><strong>No recognizable face in Frame</strong> - If the frame has no recognizable face and some distant images which are very unclear.</li>
+</ul>
+<p><img alt="H" src="img/Picture31.jpg" /><img alt="j" src="img/Picture30.jpg" /><img alt="I" src="img/Picture24.jpg" /><img alt="II" src="img/Picture25.jpg" /><img alt="I" src="img/Picture27.jpg" /><img alt="I" src="img/Picture29.jpg" /></p>
+<p>Then with the custom Neural Network we devloped, we generated feature maps which shows as following:</p>
+<p><img src="./img/Picture34.png" alt="Image 1" width="300" height="300">
+<img src="./img/Picture33.png" alt="Image 1" width="300" height="200">
+<img src="./img/Picture35.png" alt="Image 1" width="300" height="300">
+<img src="./img/Picture32.png" alt="Image 1" width="300" height="300"></p>
+<p>Even in this zoomed in images, the amount of pixels covering pixels are very few and very difficult to classify the images based on mask from the limited data with high number of variations.</p>
+<ul>
+<li>Although training Acuuracy is good by optimizing the algorithm and increasing number of epochs, <strong>testing accuracy is bad with only 65%</strong>. If we perform real time detection with this, it would be highly inaccurate.</li>
+</ul>
+<p><img src="./img/Error.png" alt="Image 1" width="500" height="500"></p>
 <h2 id="d-ros-network">d. ROS Network</h2>
 <h2 id="e-tradeoffs">e. Tradeoffs</h2>
 <h2 id="f-videos-of-working-model">f. Videos of Working Model</h2>
@@ -188,5 +201,5 @@ docs/
 
 <!--
 MkDocs version : 1.4.2
-Build Date UTC : 2023-05-03 04:45:30.311421+00:00
+Build Date UTC : 2023-05-03 07:38:16.038151+00:00
 -->
