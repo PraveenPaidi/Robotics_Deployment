@@ -66,6 +66,10 @@
                 <li class="toctree-l1"><a class="reference internal" href="about/">About</a>
                 </li>
               </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="Neural_Network_Model/">Neural Network Model</a>
+                </li>
+              </ul>
       </div>
     </div>
     </nav>
@@ -130,18 +134,60 @@ Face with mask and Without Mask at different distances from OAK-D camera at diff
 <p><img alt="H" src="img/Picture31.jpg" /><img alt="j" src="img/Picture30.jpg" /><img alt="I" src="img/Picture24.jpg" /><img alt="II" src="img/Picture25.jpg" /><img alt="I" src="img/Picture27.jpg" /><img alt="I" src="img/Picture29.jpg" /></p>
 <p>Then with the custom Neural Network we devloped, we generated feature maps which shows as following:</p>
 <p><img src="./img/Picture34.png" alt="Image 1" width="300" height="300">
-<img src="./img/Picture33.png" alt="Image 1" width="300" height="200">
+<img src="./img/Picture33.png" alt="Image 1" width="300" height="300">
 <img src="./img/Picture35.png" alt="Image 1" width="300" height="300">
 <img src="./img/Picture32.png" alt="Image 1" width="300" height="300"></p>
 <p>Even in this zoomed in images, the amount of pixels covering pixels are very few and very difficult to classify the images based on mask from the limited data with high number of variations.</p>
 <ul>
-<li>Although training Acuuracy is good by optimizing the algorithm and increasing number of epochs, <strong>testing accuracy is bad with only 65%</strong>. If we perform real time detection with this, it would be highly inaccurate.</li>
+<li>Although training Acuuracy is good by optimizing the algorithm and increasing number of epochs, <strong>testing accuracy is not good with only 65%</strong>. If we perform real time detection with this, it would be highly inaccurate.</li>
 </ul>
 <p><img src="./img/Error.png" alt="Image 1" width="500" height="500"></p>
+<ul>
+<li>
+<p>We updated the Training data with Face with and without mask at limited distance at proper light source with few gestures.</p>
+</li>
+<li>
+<p><strong>Few Instances of preliminary dataset</strong></p>
+</li>
+<li><strong>With Face Mask</strong>  -  If the frame has frame consisting of face with mask</li>
+</ul>
+<p><img src="./img/wm1.jpg" alt="Image 1" width="200" height="200">
+<img src="./img/wm2.jpg" alt="Image 1" width="200" height="200">
+<img src="./img/wm3.jpg" alt="Image 1" width="200" height="200"></p>
+<ul>
+<li><strong>Without Face Mask</strong> - If the frame has consisting of face without mask and some ambiguity cases of half frames and fully blurred faces.</li>
+</ul>
+<p><img src="./img/w1.jpg" alt="Image 1" width="200" height="200">
+<img src="./img/w2.jpg" alt="Image 1" width="200" height="200">
+<img src="./img/w3.jpg" alt="Image 1" width="200" height="200"></p>
+<ul>
+<li><strong>No recognizable face in Frame</strong> - If the frame has no recognizable face and some distant images which are very unclear.</li>
+</ul>
+<p><img src="./img/n1.jpg" alt="Image 1" width="200" height="200">
+<img src="./img/n2.jpg" alt="Image 1" width="200" height="200">
+<img src="./img/n3.jpg" alt="Image 1" width="200" height="200"></p>
+<ul>
+<li>After Training on data, we got adequate accuracy in Training along with a <strong>good amount of testing accuracy of 89%</strong></li>
+<li>we split the data into Training and Testing in 90% and 10% and Training accuracy as follows:</li>
+<li>Training data Classification:
+<img src="./img/Training_data.png" alt="Image 1" width="500" height="500"></li>
+<li>
+<p>Testing data Classification:
+<img src="./img/Testing_data.png" alt="Image 1" width="500" height="500"></p>
+</li>
+<li>
+<p>Training Accuracy:</p>
+</li>
+</ul>
+<p><img src="./img/Final_accuracy.png" alt="Image 1" width="500" height="500"></p>
 <h2 id="d-ros-network">d. ROS Network</h2>
 <h2 id="e-tradeoffs">e. Tradeoffs</h2>
+<p><strong>Main Challenges</strong><br />
+1. Training time<br />
+2. Accurate prediction of frames during Real time streaming  </p>
 <h2 id="f-videos-of-working-model">f. Videos of Working Model</h2>
-<iframe width="560" height="315" src="https://www.youtube.com/embed/yYAw79386WI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+<p><strong>RealTime detection of Presence or Ansence of mask with absolute zero training of Person's face</strong></p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/pe2afb0SzxE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 <h2 id="f-goals-process-and-results">f. Goals, Process and Results</h2>
 <h2 id="project-layout">Project layout</h2>
@@ -201,5 +247,5 @@ docs/
 
 <!--
 MkDocs version : 1.4.2
-Build Date UTC : 2023-05-03 07:38:16.038151+00:00
+Build Date UTC : 2023-05-03 09:35:05.397083+00:00
 -->
