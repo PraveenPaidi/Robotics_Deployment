@@ -55,7 +55,7 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#f-videos-of-working-model">f. Videos of Working Model</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#g-goals-process-and-results">g. Goals, Process and Results</a>
+    <li class="toctree-l2"><a class="reference internal" href="#g-goals-process-and-results-s">g. Goals, Process and Results s</a>
     </li>
     </ul>
                 </li>
@@ -108,13 +108,19 @@
 <p>The main objective of this project is to detect the absence or presence of facemask using the OAK-D camera feed of turtlebot by deploying Neural Networks.
 If the turtlebot camera detects a face without mask, it displays the output image as 'without mask' and move towards the detected face.</p>
 <p>Training data and Neural network for mask detection is custom made, MTCNN (inbuilt algorithm) is being used for face coordinates.</p>
+<p>An insight of Project Goals and procedure that we have followed and results obtained are briefly discussed 
+<a href="#g">here</a></p>
+<p>Team Members:<br />
+Karthick Subramanian<br />
+Rohan Khare<br />
+Praveen Paidi  </p>
 <h2 id="a-updatesrefreshes">a. Updates/Refreshes</h2>
 <ol>
 <li>We made our own Neural Network for the feature generation by taking training data of images from OAK-D camera.</li>
-<li>From the custom NN model, We deployed model_weights to ROS node which does face mask recognition in real time by subscribing to real time data current_frame.</li>
+<li>From the custom NN model, We deployed model to ROS node which does face mask recognition in real time by subscribing to real time data current_frame.</li>
 <li>We used inbuilt software called MTCNN face detection algorithm for creation of the bounding box for faces which is also subscribing to real time data current_frame.</li>
-<li>We published a custom topic /go/image from face mask recognition ROS node to MTCNN_vel_pub node which is subscriber to /go/image and publishes /cmd/vel.</li>
-<li>If the MTCNN_vel_det is being sent face without mask, it publishes velocity to move towards that face by using Face bounding box coordinates.</li>
+<li>We published a custom topic /go/image from face mask recognition ROS node to MTCNN_vel_pub(fcae tracking) node which is subscriber to /go/image and publishes /cmd/vel.</li>
+<li>If the MTCNN_vel_det(face tracking) is being sent face without mask, it publishes velocity to move towards that face by using Face bounding box coordinates.</li>
 </ol>
 <p>We tried mapping classroom environment, but due to constraints we sticked to main scope of project which is NN deployment. We aim to improve by performing dynamic obstacle avoidance (SLAM).</p>
 <h2 id="b-project-process">b. Project Process</h2>
@@ -283,26 +289,26 @@ It is predicting good, doesn't take much time as well. </p>
 3. If the face is mostly out of the frame, it is being detected as no face recognized.<br />
 4. We trained the data accordingly to reduce the false negatives due to which there may be few errors during the transition of frames such as face entering or exiting the frame.  </p>
 <h2 id="f-videos-of-working-model">f. Videos of Working Model</h2>
-<p><strong>Video 2- AMBIGUOUS CASE TESTING WITH NO TRAINING</strong></p>
-<ul>
-<li><strong>Real time video of turtlebot detecting face without mask</strong>:   </li>
-<li>In this video, Mask is being pulled down and not covering the face. We have not trained this ambiguous cases earlier, still it is successfully detecting the classification.</li>
-</ul>
-<p><strong>Video 2- AMBIGUOUS CASE TESTING WITH NO TRAINING</strong></p>
+<p><strong>Video 1- TURTLEBOT VIEW OF TESTING</strong><br />
+<strong>Real time video of turtlebot view detecting face without mask</strong>:<br />
+Screen recording of mask is being pulled down and not covering the face. We have not trained this ambiguous cases earlier, still it is successfully detecting the classification  </p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/A22qfrodaQM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+<p><strong>Video 2- AMBIGUOUS CASE TESTING WITH NO TRAINING</strong><br />
+<strong>Real time video of turtlebot detecting face without mask</strong>: <br />
+* In this video, turtlebot movement of simultaneous ROS nodes in video1.  </p>
 <iframe width="560" height="315" src="https://www.youtube.com/embed/HcZVg-6S_Ns" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
-<p><strong>RealTime detection of Presence or Ansence of mask with absolute zero training of Person's face</strong>
-*  In this video, Face present in the frame is not at all used in training data. It is still successfully able to detect the classification accurately and moving towards the face without mask.</p>
-<p><strong>Video 3 - ABSOLUTE UNKNOWN FACE TESTING</strong></p>
+<p><strong>Video 3 - ABSOLUTE UNKNOWN FACE TESTING</strong><br />
+<strong>RealTime detection of Presence or Ansence of mask with absolute zero training of Person's face</strong><br />
+*  In this video, Face present in the frame is not at all used in training data. It is still successfully able to detect the classification accurately and moving towards the face without mask.  </p>
 <iframe width="560" height="315" src="https://www.youtube.com/embed/pe2afb0SzxE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
-<h2 id="g-goals-process-and-results">g. Goals, Process and Results</h2>
+<h2 id="g-goals-process-and-results-s">g. Goals, Process and Results <a name="g"></a>s</h2>
 <ul>
 <li>An insight of Project Goals and procedure that we have followed and results obtained are briefly discussed in this:</li>
 </ul>
 <iframe width="560" height="315" src="https://www.youtube.com/embed/1o9Nh7-eACc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-
-<p>sss</p>
               
             </div>
           </div><footer>
@@ -354,5 +360,5 @@ It is predicting good, doesn't take much time as well. </p>
 
 <!--
 MkDocs version : 1.4.2
-Build Date UTC : 2023-05-04 02:06:49.025374+00:00
+Build Date UTC : 2023-05-04 03:04:03.261729+00:00
 -->
