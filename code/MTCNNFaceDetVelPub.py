@@ -25,9 +25,12 @@ class FaceTrackingNode(Node):
             height, width, channels = cv_image.shape
             error_x = center_x - width/2
             error_y = center_y - height/2
+            print(error_x)
             twist_msg = Twist()
-            twist_msg.linear.x = 0.05  # set linear speed
-            twist_msg.angular.z = -0.001 * error_x  # set angular speed based on error
+            twist_msg.linear.x = 0.07  # set linear speed
+            print('Moving straight towards face without mask')
+            twist_msg.angular.z = -0.0008 * error_x  # set angular speed based on error
+            print('Taking Steer turn towards face without mask')
             self.publisher.publish(twist_msg)
 
 def main(args=None):

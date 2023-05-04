@@ -30,7 +30,7 @@ class FaceDetectorNode(Node):
             cv2.rectangle(image, (x, y), (x+width, y+height), (0, 255, 0), 2)
 
         # Display the output image
-        cv2.imshow('Output', image)
+        cv2.imshow('FACE_DETECTOR', image)
         cv2.waitKey(1)
 
 def main(args=None):

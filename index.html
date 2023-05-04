@@ -55,9 +55,7 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#f-videos-of-working-model">f. Videos of Working Model</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#f-goals-process-and-results">f. Goals, Process and Results</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#project-layout">Project layout</a>
+    <li class="toctree-l2"><a class="reference internal" href="#g-goals-process-and-results">g. Goals, Process and Results</a>
     </li>
     </ul>
                 </li>
@@ -107,24 +105,25 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="introduction">Introduction</h1>
-<p>The main objective of this project is to detect the absence or presence of facemask using the OAK-D camera feed of turtlebot by deploying Neural Networks.</p>
-<p>If the turtlebot camera detects a face without mask, it'll move towards the detected face. </p>
+<p>The main objective of this project is to detect the absence or presence of facemask using the OAK-D camera feed of turtlebot by deploying Neural Networks.
+If the turtlebot camera detects a face without mask, it displays the output image as 'without mask' and move towards the detected face.</p>
+<p>Training data and Neural network for mask detection is custom made, MTCNN (inbuilt algorithm) is being used for face coordinates.</p>
 <h2 id="a-updatesrefreshes">a. Updates/Refreshes</h2>
 <ol>
-<li>We made our own Neural Network for the feature generation by taking current_frames from OAK-D camera.</li>
+<li>We made our own Neural Network for the feature generation by taking training data of images from OAK-D camera.</li>
 <li>From the custom NN model, We deployed model_weights to ROS node which does face mask recognition in real time by subscribing to real time data current_frame.</li>
 <li>We used inbuilt software called MTCNN face detection algorithm for creation of the bounding box for faces which is also subscribing to real time data current_frame.</li>
-<li>If the custom model is detecting face without maask, it publishes velocity to move towards that face by using Velocity subscriber Node.</li>
+<li>We published a custom topic /go/image from face mask recognition ROS node to MTCNN_vel_pub node which is subscriber to /go/image and publishes /cmd/vel.</li>
+<li>If the MTCNN_vel_det is being sent face without mask, it publishes velocity to move towards that face by using Face bounding box coordinates.</li>
 </ol>
+<p>We tried mapping classroom environment, but due to constraints we sticked to main scope of project which is NN deployment. We aim to improve by performing dynamic obstacle avoidance (SLAM).</p>
 <h2 id="b-project-process">b. Project Process</h2>
-<ul>
-<li><code>mkdocs new [dir-name]</code> - Create a new project.</li>
-<li><code>mkdocs serve</code> - Start the live-reloading docs server.</li>
-<li><code>mkdocs build</code> - Build the documentation site.</li>
-<li><code>mkdocs -h</code> - Print help message and exit.</li>
-</ul>
-<h2 id="c-work-flow">c. Work Flow</h2>
+<p>Although we were able to deploy custom model to ROS node in the previous week, Due to accuracy and some other constraints we revised the schedule from the last week and performed required tasks such as data collection and real time deployment with iterations.</p>
+<p>Following is the <strong>Process chart</strong>:</p>
+<p><img alt="Home" src="img/gantt.png" /></p>
+<p>The <strong>complete work flow of our project</strong> as follows:</p>
 <p><img alt="Home" src="img/Screenshot.png" /></p>
+<h2 id="c-work-flow">c. Work Flow</h2>
 <ul>
 <li>
 <p>Initially we collected dataset consisting of huge variations i.e 
@@ -133,17 +132,19 @@ Face with mask and Without Mask at different distances from OAK-D camera at diff
 <li>
 <p><strong>Few Instances of preliminary dataset</strong></p>
 </li>
-<li><strong>With Face Mask</strong>  -  If the frame has frame consisting of face with mask</li>
+<li><strong>With Face Mask</strong>  -  If the frame has a face with mask. - Class 0</li>
 </ul>
 <p><img alt="H" src="img/Picture1.jpg" /><img alt="j" src="img/Picture2.jpg" /><img alt="I" src="img/Picture3.jpg" /><img alt="II" src="img/Picture4.jpg" /><img alt="I" src="img/Picture5.jpg" /><img alt="I" src="img/Picture8.jpg" /></p>
 <ul>
-<li><strong>Without Face Mask</strong> - If the frame has consisting of face without mask and some ambiguity cases of half frames and fully blurred faces.</li>
+<li><strong>Without Face Mask</strong> - If the frame has a face without mask and some ambiguity cases of half frames and fully blurred faces. - Class 1</li>
 </ul>
 <p><img alt="H" src="img/Picture12.jpg" /><img alt="j" src="img/Picture13.jpg" /><img alt="I" src="img/Picture14.jpg" /><img alt="II" src="img/Picture15.jpg" /><img alt="I" src="img/Picture17.jpg" /><img alt="I" src="img/Picture18.jpg" /></p>
 <ul>
-<li><strong>No recognizable face in Frame</strong> - If the frame has no recognizable face and some distant images which are very unclear.</li>
+<li><strong>No recognizable face in Frame</strong> - If the frame has no recognizable face and some distant images which are very unclear. - Class 2</li>
 </ul>
 <p><img alt="H" src="img/Picture31.jpg" /><img alt="j" src="img/Picture30.jpg" /><img alt="I" src="img/Picture24.jpg" /><img alt="II" src="img/Picture25.jpg" /><img alt="I" src="img/Picture27.jpg" /><img alt="I" src="img/Picture29.jpg" /></p>
+<p><strong>Custom Neural Network for Face mask Detection:</strong></p>
+<p><img alt="H" src="img/NN.png" /></p>
 <p>Then with the custom Neural Network we devloped, we generated feature maps which shows as following:</p>
 <p><img src="./img/Picture34.png" alt="Image 1" width="300" height="300">
 <img src="./img/Picture33.png" alt="Image 1" width="300" height="300">
@@ -151,9 +152,10 @@ Face with mask and Without Mask at different distances from OAK-D camera at diff
 <img src="./img/Picture32.png" alt="Image 1" width="300" height="300"></p>
 <p>Even in this zoomed in images, the amount of pixels covering pixels are very few and very difficult to classify the images based on mask from the limited data with high number of variations.</p>
 <ul>
-<li>Although training Acuuracy is good by optimizing the algorithm and increasing number of epochs, <strong>testing accuracy is not good with only 65%</strong>. If we perform real time detection with this, it would be highly inaccurate.</li>
+<li>Although training Accuracy is good by optimizing the algorithm and increasing number of epochs, <strong>testing accuracy is not good with only 65%</strong>. If we perform real time detection with this, it would be highly inaccurate.</li>
 </ul>
 <p><img src="./img/Error.png" alt="Image 1" width="500" height="500"></p>
+<p><strong>Counter Measures</strong></p>
 <ul>
 <li>
 <p>We updated the Training data with Face with and without mask at limited distance at proper light source with few gestures.</p>
@@ -161,7 +163,7 @@ Face with mask and Without Mask at different distances from OAK-D camera at diff
 <li>
 <p><strong>Few Instances of preliminary dataset</strong></p>
 </li>
-<li><strong>With Face Mask</strong>  -  If the frame has frame consisting of face with mask</li>
+<li><strong>With Face Mask</strong>  -  If the frame has face with mask</li>
 </ul>
 <p><img src="./img/wm1.jpg" alt="Image 1" width="200" height="200">
 <img src="./img/wm2.jpg" alt="Image 1" width="200" height="200">
@@ -179,80 +181,128 @@ Face with mask and Without Mask at different distances from OAK-D camera at diff
 <img src="./img/n2.jpg" alt="Image 1" width="200" height="200">
 <img src="./img/n3.jpg" alt="Image 1" width="200" height="200"></p>
 <ul>
-<li>After Training on data, we got adequate accuracy in Training along with a <strong>good amount of testing accuracy of 89%</strong></li>
-<li>we split the data into Training and Testing in 90% and 10% and Training accuracy as follows:</li>
-<li>Training data Classification:
-<img src="./img/Training_data.png" alt="Image 1" width="500" height="500"></li>
+<li>
+<p>we split the data into Training and Testing in 90% and 10% and Training accuracy as follows:</p>
+</li>
+<li>
+<p>Training data Classification:
+<img src="./img/Training_data.png" alt="Image 1" width="500" height="500"></p>
+</li>
 <li>
 <p>Testing data Classification:
 <img src="./img/Testing_data.png" alt="Image 1" width="500" height="500"></p>
+</li>
+<li>
+<p>After Training on data, we got adequate accuracy in Training along with a <strong>good amount of testing accuracy of 89%</strong></p>
 </li>
 <li>
 <p>Training Accuracy:</p>
 </li>
 </ul>
 <p><img src="./img/Final_accuracy.png" alt="Image 1" width="500" height="500"></p>
+<ul>
+<li>
+<p>With 89% testing accuracy, we tested on few absolute new images as well before deploying to ROS node for real time detection.
+It is predicting good, doesn't take much time as well. </p>
+</li>
+<li>
+<p>We transferred the model_infernce to ROS node using tensorflow.</p>
+</li>
+</ul>
 <h2 id="d-ros-network">d. ROS Network</h2>
+<ul>
+<li>
+<p>With model being imported, we created total of 3 nodes and 1 custom topic to complete actions.</p>
+</li>
+<li>
+<p><strong>Mask Detector node</strong> is a subscriber to /color/image and publishes custom topic /go/image, displays output windows of current frame and detection frame.</p>
+</li>
+<li><strong>face Detector node</strong> is a subscriber to /color/image and displays output window of bounding box.</li>
+<li>
+<p><strong>face tracking</strong> node is a subscriber to /go/image and publishes /cmd/vel.</p>
+</li>
+<li>
+<p><strong>Complete ROS architecture</strong></p>
+</li>
+</ul>
+<p><img alt="H" src="img/rosgraph_overall.png" />
+      rqt_gul_py for the generation of ROS graph is also shown in the graph.</p>
 <h2 id="e-tradeoffs">e. Tradeoffs</h2>
 <p><strong>Main Challenges</strong>  </p>
 <ol>
 <li>
-<p>Training time</p>
+<p><strong>Training time</strong></p>
 <ul>
 <li>As the Neural Network model is heavy, we trained set of images in GPU and obtained the model.
   Then transferred the model weights to ROS node to take one frame at a time.This has no lag and almost accurate.</li>
 </ul>
 </li>
 <li>
-<p>Movement of Turtlebot</p>
+<p><strong>Movement of Turtlebot</strong></p>
 <ul>
 <li>For the Face detection and creating a bounding box, it takes more time in real time.As a result, output window with bounding box has a lag of few seconds.
   Which inturn carries the lag in moving the turtlebot towards the bounding box containing face without the mask.</li>
 </ul>
 </li>
 <li>
-<p>Detection vs Movement</p>
+<p><strong>Detection vs Movement</strong></p>
 <ul>
 <li>Although Face mask detection takes place at real time, turtlebot is moving after few moments later the detection and viceversa.</li>
 </ul>
 </li>
 </ol>
-<p><strong>Constraints</strong></p>
+<p><strong>Tradeoffs due to constraints</strong></p>
 <ol>
 <li>
-<p>Fitting Training data</p>
+<p><strong>Fitting Training data</strong></p>
 <ul>
 <li>We used Adam algorithm to save the training time.</li>
 <li>We chose number of epochs to 5 to not overfit on training data by considering bias and variance trade off.</li>
+<li>If we furthur increase the number of epochs, we may lose the testing accuracy.</li>
 </ul>
 </li>
 <li>
-<p>Non Generalized Detection</p>
+<p><strong>Non Generalized Detection</strong></p>
 <ul>
 <li>As the dataset is limited, detection using OAK-D camera at different environment with different person is not feasible.</li>
 <li>To detect, proper lighting and limited distance to the camera are required.</li>
-<li>With limited training data, we are able to test at few places with absolute faces successfully.</li>
+<li>With limited training data, we are able to test at few places with absolute new faces successfully.</li>
 </ul>
 </li>
 <li>
-<p>Bounding box trade off</p>
+<p><strong>Bounding box trade off</strong></p>
 <ul>
 <li>We used face detection algorithm along with velocity subscriber not with face mask detector to increase the speed of detection.</li>
-<li>It significantly increased the speed of detection by almost 2 to 3 sec.</li>
+<li>It significantly increased the speed of detection by almost 2 to 3 sec at the cost of movement of bot.</li>
 </ul>
 </li>
 </ol>
+<p>In overall process, we gave stress to reduce type 2 error <strong>(False Negative)</strong>.<br />
+1. As it is a face mask detection, a person without mask should be detected properly. <br />
+2. If the bot has ambiguous case like image is blur or face is not complete in the frame, it is mostly detected as face without mask.<br />
+3. If the face is mostly out of the frame, it is being detected as no face recognized.<br />
+4. We trained the data accordingly to reduce the false negatives due to which there may be few errors during the transition of frames such as face entering or exiting the frame.  </p>
 <h2 id="f-videos-of-working-model">f. Videos of Working Model</h2>
-<p><strong>RealTime detection of Presence or Ansence of mask with absolute zero training of Person's face</strong></p>
+<p><strong>Video 2- AMBIGUOUS CASE TESTING WITH NO TRAINING</strong></p>
+<ul>
+<li><strong>Real time video of turtlebot detecting face without mask</strong>:   </li>
+<li>In this video, Mask is being pulled down and not covering the face. We have not trained this ambiguous cases earlier, still it is successfully detecting the classification.</li>
+</ul>
+<p><strong>Video 2- AMBIGUOUS CASE TESTING WITH NO TRAINING</strong></p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/HcZVg-6S_Ns" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+<p><strong>RealTime detection of Presence or Ansence of mask with absolute zero training of Person's face</strong>
+*  In this video, Face present in the frame is not at all used in training data. It is still successfully able to detect the classification accurately and moving towards the face without mask.</p>
+<p><strong>Video 3 - ABSOLUTE UNKNOWN FACE TESTING</strong></p>
 <iframe width="560" height="315" src="https://www.youtube.com/embed/pe2afb0SzxE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
-<h2 id="f-goals-process-and-results">f. Goals, Process and Results</h2>
-<h2 id="project-layout">Project layout</h2>
-<pre><code>mkdocs.yml    # The configuration file.
-docs/
-    index.md  # The documentation homepage.
-    ...       # Other markdown pages, images and other files.
-</code></pre>
+<h2 id="g-goals-process-and-results">g. Goals, Process and Results</h2>
+<ul>
+<li>An insight of Project Goals and procedure that we have followed and results obtained are briefly discussed in this:</li>
+</ul>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/1o9Nh7-eACc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+<p>sss</p>
               
             </div>
           </div><footer>
@@ -304,5 +354,5 @@ docs/
 
 <!--
 MkDocs version : 1.4.2
-Build Date UTC : 2023-05-03 12:27:42.067076+00:00
+Build Date UTC : 2023-05-04 02:06:49.025374+00:00
 -->
